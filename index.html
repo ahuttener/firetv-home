@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CyberSecInfo TV</title>
+<style>
+  /* =========================================================
+     CYBERSECINFO TV — tela inicial para Fire TV (16:9)
+     Marca: fundo navy #0a0a1a + ciano #22d3ee
+     Layout: esquerda (marca/relógio/data/clima) + grade de atalhos
+     ========================================================= */
+  :root{
+    --bg:#0a0a1a; --bg-2:#111833; --fg:#eaf6ff; --muted:#7f8db3;
+    --line:#1e2a4a; --accent:#22d3ee; --focus:#22d3ee; --tile:#121a33;
+    --font:"Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    background:radial-gradient(1200px 600px at 80% -10%, rgba(34,211,238,.12) 0%, transparent 60%), var(--bg);
+    color:var(--fg); font-family:var(--font); overflow:hidden;
+    -webkit-user-select:none; user-select:none;
+  }
+  .screen{height:100%; display:grid; grid-template-columns:0.9fr 1.6fr;
+    gap:clamp(16px,3vw,56px); padding:clamp(20px,4vw,64px); position:relative;}
+  /* moldura neon em volta da tela (estilo banner CyberSecInfo) */
+  .screen::after{content:"";position:fixed;inset:clamp(12px,1.6vw,22px);border:1.5px solid rgba(34,211,238,.4);
+    border-radius:28px;box-shadow:0 0 26px rgba(34,211,238,.28), inset 0 0 26px rgba(34,211,238,.12);pointer-events:none}
+  /* marca */
+  .left{display:flex;flex-direction:column;justify-content:space-between;min-width:0;gap:clamp(16px,2vw,28px)}
+  .brand{display:flex;align-items:center;gap:clamp(10px,1.2vw,18px)}
+  .brand img{width:clamp(44px,5vw,78px);height:clamp(44px,5vw,78px);border-radius:50%;
+    box-shadow:0 0 0 2px rgba(34,211,238,.6), 0 0 22px rgba(34,211,238,.5)}
+  .brand .wordmark{font-size:clamp(20px,2.4vw,36px);font-weight:800;letter-spacing:-.01em}
+  .brand .wordmark .c{color:var(--accent);text-shadow:0 0 14px rgba(34,211,238,.6)}
+  .brand .tagline{display:block;font-size:clamp(9px,.9vw,13px);letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px}
+  /* relógio */
+  .clock{font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:-.02em;line-height:.95;
+    font-size:clamp(64px,11vw,180px)}
+  .date{margin-top:.4rem;color:var(--muted);text-transform:capitalize;font-size:clamp(16px,2vw,30px)}
+  /* clima */
+  .weather{display:flex;align-items:center;gap:clamp(12px,2vw,24px);padding:clamp(16px,2vw,30px);
+    background:linear-gradient(180deg,var(--bg-2),#0f1626);border:1px solid rgba(34,211,238,.28);
+    border-radius:22px;box-shadow:0 0 22px rgba(34,211,238,.1)}
+  .weather .ico{font-size:clamp(40px,6vw,88px);line-height:1}
+  .weather .temp{font-size:clamp(34px,5vw,66px);font-weight:700;font-variant-numeric:tabular-nums}
+  .weather .desc{color:var(--muted);font-size:clamp(14px,1.5vw,24px)}
+  .weather .city{font-size:clamp(13px,1.4vw,20px);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  /* atalhos */
+  .right{display:flex;flex-direction:column;min-width:0;gap:clamp(14px,2vw,28px)}
+  .eyebrow{letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-size:clamp(12px,1.2vw,16px);font-weight:600}
+  .apps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.6vw,24px);flex:1}
+  .app{display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(14px,1.8vw,28px);
+    background:var(--tile);border:1px solid rgba(34,211,238,.22);border-radius:22px;color:var(--fg);text-decoration:none;
+    position:relative;overflow:hidden;min-height:clamp(96px,15vh,200px);
+    box-shadow:0 0 16px rgba(34,211,238,.06);
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease}
+  .app .badge{width:clamp(42px,4.4vw,64px);height:clamp(42px,4.4vw,64px);border-radius:14px;display:grid;
+    place-items:center;font-weight:800;font-size:clamp(18px,2.1vw,30px);color:#fff;position:absolute;
+    top:clamp(14px,1.8vw,28px);left:clamp(14px,1.8vw,28px)}
+  .app .name{font-size:clamp(16px,1.9vw,28px);font-weight:600}
+  .app:focus,.app:hover{outline:none;transform:translateY(-4px) scale(1.02);border-color:var(--focus);
+    box-shadow:0 0 0 2px var(--accent), 0 0 28px rgba(34,211,238,.6), 0 0 64px rgba(34,211,238,.3), 0 18px 40px rgba(0,0,0,.45)}
+  .news{border-top:1px solid var(--line);padding-top:clamp(12px,1.6vw,20px);display:flex;flex-direction:column;gap:.5rem}
+  .news ul{margin:0;padding:0;display:flex;flex-direction:column;gap:.45rem}
+  .news li{color:var(--muted);font-size:clamp(14px,1.4vw,22px);list-style:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  @media (max-width:780px){.screen{grid-template-columns:1fr;overflow:auto}.apps{grid-template-columns:repeat(2,1fr)}body{overflow:auto}}
+</style>
+</head>
+<body>
+<div class="screen">
+  <section class="left">
+    <div class="brand">
+      <img src="assets/logo.png" alt="CyberSecInfo">
+      <div>
+        <div class="wordmark"><span class="c">Cyber</span>SecInfo</div>
+        <span class="tagline">Information Security</span>
+      </div>
+    </div>
+    <div>
+      <div class="clock" id="clock">--:--</div>
+      <div class="date" id="date">—</div>
+    </div>
+    <div class="weather">
+      <div class="ico" id="w-ico">·</div>
+      <div>
+        <div class="temp" id="w-temp">--°</div>
+        <div class="desc" id="w-desc">carregando clima…</div>
+        <div class="city" id="w-city"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="right">
+    <div class="eyebrow">Meus apps</div>
+    <nav class="apps" id="apps"></nav>
+    <div class="news">
+      <div class="eyebrow">Destaques</div>
+      <ul id="news"></ul>
+    </div>
+  </section>
+</div>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO — edite só esta parte
+   - "pkg": nome técnico do app no Fire TV (abre o app DE VERDADE
+            via Fully Kiosk). "url": usado como reserva no navegador.
+   ========================================================= */
+const CONFIG = {
+  city:"Dublin",
+  clock24h:true,
+  apps:[
+    { name:"YouTube",     tag:"▶", color:"#ff0000", pkg:"com.amazon.firetv.youtube",       url:"https://www.youtube.com/tv" },
+    { name:"Netflix",     tag:"N", color:"#e50914", pkg:"com.netflix.ninja",                url:"https://www.netflix.com" },
+    { name:"Prime Video", tag:"P", color:"#1f9fe0", pkg:"com.amazon.avod.thirdpartyclient", url:"https://www.primevideo.com" },
+    { name:"Spotify",     tag:"S", color:"#1db954", pkg:"com.spotify.tv.android",           url:"https://open.spotify.com" },
+    { name:"Disney+",     tag:"D", color:"#113ccf", pkg:"com.disney.disneyplus",            url:"https://www.disneyplus.com" }
+  ],
+  news:[
+    "Edite estas manchetes em CONFIG.news",
+    "Relógio e clima já funcionam sozinhos",
+    "Os atalhos abrem os apps do Fire TV"
+  ]
+};
+
+/* ===== relógio + data ===== */
+const pad=n=>String(n).padStart(2,"0");
+function tick(){
+  const now=new Date(); let h=now.getHours();
+  if(!CONFIG.clock24h) h=h%12||12;
+  document.getElementById("clock").textContent=pad(h)+":"+pad(now.getMinutes());
+  document.getElementById("date").textContent=now.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
+}
+tick(); setInterval(tick,1000);
+
+/* ===== atalhos (abre app nativo no Fire TV via Fully Kiosk) ===== */
+const appsEl=document.getElementById("apps");
+CONFIG.apps.forEach(a=>{
+  const el=document.createElement("a");
+  el.className="app"; el.href=a.url||"#";
+  el.innerHTML=`<span class="badge" style="background:${a.color}">${a.tag}</span><span class="name">${a.name}</span>`;
+  el.addEventListener("click",e=>{
+    // dentro do Fully Kiosk existe o objeto global "fully" -> abre o app de verdade
+    if(a.pkg && a.pkg.indexOf(".")>0 && a.pkg!=="SEU.APP.DE.IPTV" && window.fully && fully.startApplication){
+      e.preventDefault(); fully.startApplication(a.pkg);
+    }
+  });
+  appsEl.appendChild(el);
+});
+
+/* ===== notícias ===== */
+const newsEl=document.getElementById("news");
+CONFIG.news.forEach(t=>{const li=document.createElement("li");li.textContent="• "+t;newsEl.appendChild(li);});
+
+/* ===== navegação por controle remoto (setas do Fire TV) ===== */
+const tiles=[...document.querySelectorAll(".app")];
+if(tiles[0]) tiles[0].focus();
+const COLS=3;
+document.addEventListener("keydown",e=>{
+  const i=tiles.indexOf(document.activeElement);
+  if(i<0){ if(["ArrowRight","ArrowDown","ArrowLeft","ArrowUp"].includes(e.key)){tiles[0].focus();e.preventDefault();} return; }
+  let n=i;
+  if(e.key==="ArrowRight")n=Math.min(i+1,tiles.length-1);
+  else if(e.key==="ArrowLeft")n=Math.max(i-1,0);
+  else if(e.key==="ArrowDown")n=Math.min(i+COLS,tiles.length-1);
+  else if(e.key==="ArrowUp")n=Math.max(i-COLS,0);
+  else return;
+  tiles[n].focus(); e.preventDefault();
+});
+
+/* ===== clima ao vivo (Open-Meteo, sem chave) ===== */
+const WMO={0:["☀️","Céu limpo"],1:["🌤️","Poucas nuvens"],2:["⛅","Parcialmente nublado"],3:["☁️","Nublado"],
+45:["🌫️","Neblina"],48:["🌫️","Neblina"],51:["🌦️","Garoa"],53:["🌦️","Garoa"],55:["🌦️","Garoa"],
+61:["🌧️","Chuva fraca"],63:["🌧️","Chuva"],65:["🌧️","Chuva forte"],71:["🌨️","Neve"],73:["🌨️","Neve"],75:["❄️","Neve forte"],
+80:["🌦️","Pancadas"],81:["🌧️","Pancadas"],82:["⛈️","Pancadas fortes"],95:["⛈️","Tempestade"],96:["⛈️","Tempestade"],99:["⛈️","Tempestade"]};
+async function loadWeather(){
+  try{
+    const g=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(CONFIG.city)}&count=1&language=pt&format=json`).then(r=>r.json());
+    const p=g.results&&g.results[0]; if(!p) throw 0;
+    const w=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.latitude}&longitude=${p.longitude}&current=temperature_2m,weather_code&timezone=auto`).then(r=>r.json());
+    const c=w.current, [ico,desc]=WMO[c.weather_code]||["🌡️","—"];
+    document.getElementById("w-ico").textContent=ico;
+    document.getElementById("w-temp").textContent=Math.round(c.temperature_2m)+"°";
+    document.getElementById("w-desc").textContent=desc;
+    document.getElementById("w-city").textContent=p.name+(p.country_code?" · "+p.country_code:"");
+  }catch(err){
+    document.getElementById("w-desc").textContent="clima indisponível";
+    document.getElementById("w-city").textContent=CONFIG.city;
+  }
+}
+loadWeather(); setInterval(loadWeather,15*60*1000);
+</script>
+</body>
+</html>
